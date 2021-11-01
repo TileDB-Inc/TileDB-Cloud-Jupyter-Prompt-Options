@@ -1,4 +1,4 @@
-import { UserApi } from '@tiledb-inc/tiledb-cloud';
+import { v1, v2 } from '@tiledb-inc/tiledb-cloud';
 import { addOptionsToSelectInput } from './../helpers/dom';
 import { JupyterFrontEnd } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
@@ -9,9 +9,10 @@ import { resetSelectInput } from '../helpers/dom';
 import getTileDBAPI from '../helpers/tiledbAPI';
 import getDefaultS3DataFromNamespace from '../helpers/getDefaultS3DataFromNamespace';
 
+const { UserApi } = v1;
 export interface Options {
   owners: string[];
-  credentials: any[];
+  credentials: v2.AccessCredential[];
   defaultS3Path: string;
   defaultS3CredentialName?: string;
   app: JupyterFrontEnd;
@@ -61,7 +62,7 @@ export class TileDBPromptOptionsWidget extends Widget {
     };
 
     const s3_label = document.createElement('label');
-    s3_label.textContent = 'S3 Path:';
+    s3_label.textContent = 'Cloud storage path:';
     const s3_input = document.createElement('input');
     s3_input.setAttribute('type', 'text');
     s3_input.setAttribute('value', options.defaultS3Path);
@@ -71,7 +72,7 @@ export class TileDBPromptOptionsWidget extends Widget {
     };
 
     const s3_cred_label = document.createElement('label');
-    s3_cred_label.textContent = 'S3 Path Credentials:';
+    s3_cred_label.textContent = 'Cloud storage credentials:';
     const s3_cred_selectinput = document.createElement('select');
     s3_cred_selectinput.setAttribute('name', 's3_credentials');
     s3_cred_selectinput.setAttribute('required', 'true');

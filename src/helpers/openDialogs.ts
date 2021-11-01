@@ -1,4 +1,4 @@
-import { UserApi } from '@tiledb-inc/tiledb-cloud';
+import { v1 } from '@tiledb-inc/tiledb-cloud';
 import { showDialog, showErrorMessage } from '@jupyterlab/apputils';
 import { Dialog } from '@jupyterlab/apputils';
 import {
@@ -12,6 +12,8 @@ import {
 } from '../dialogs/TileDBPromptOptionsWidget';
 import getTileDBAPI from './tiledbAPI';
 import getDefaultS3DataFromNamespace from './getDefaultS3DataFromNamespace';
+
+const { UserApi } = v1;
 
 export const showMainDialog = (data: Options): void => {
   showDialog<PromptDialogValue>({

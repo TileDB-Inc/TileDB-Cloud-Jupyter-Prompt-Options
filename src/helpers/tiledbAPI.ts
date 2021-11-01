@@ -10,7 +10,12 @@ interface Constructable<T> {
   new (c: Config): T;
 }
 
-const getTileDBAPI = async <T>(Api: Constructable<T>, apiVersion : string = 'v1'): Promise<T> => {
+export enum Versions {
+  v1 = 'v1',
+  v2 = 'v2'
+}
+
+const getTileDBAPI = async <T>(Api: Constructable<T>, apiVersion : Versions = Versions.v1): Promise<T> => {
   if (!data) {
     data = await requestAPI();
   }

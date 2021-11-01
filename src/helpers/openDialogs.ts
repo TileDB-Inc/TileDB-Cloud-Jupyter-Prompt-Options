@@ -1,4 +1,4 @@
-import { v1 } from '@tiledb-inc/tiledb-cloud';
+import { v2 } from '@tiledb-inc/tiledb-cloud';
 import { showDialog, showErrorMessage } from '@jupyterlab/apputils';
 import { Dialog } from '@jupyterlab/apputils';
 import {
@@ -10,10 +10,11 @@ import {
   PromptDialogValue,
   TileDBPromptOptionsWidget,
 } from '../dialogs/TileDBPromptOptionsWidget';
-import getTileDBAPI from './tiledbAPI';
+import getTileDBAPI, { Versions } from './tiledbAPI';
 import getDefaultS3DataFromNamespace from './getDefaultS3DataFromNamespace';
 
-const { UserApi } = v1;
+const { UserApi } = v2;
+// const { UserApi: UserApiV2 } = v2;
 
 export const showMainDialog = (data: Options): void => {
   showDialog<PromptDialogValue>({
@@ -41,14 +42,18 @@ export function openCredentialsDialog(options: Options): void {
         credentialSecret,
         owner,
       } = result.value;
-      const tileDBAPI = await getTileDBAPI(UserApi);
+      const tileDBAPI = await getTileDBAPI(UserApi, Versions.v2);
       try {
-        await tileDBAPI.addAWSAccessCredentials(owner, {
-          access_key_id: credentialKey,
+        await tileDBAPI.addCredential(owner, {
           name: credentialName,
-          secret_access_key: credentialSecret,
+          credential: {
+            aws: {
+              access_key_id: credentialKey,
+              secret_access_key: credentialSecret,
+            }
+          }
         });
-        const credentialsResponse = await tileDBAPI.checkAWSAccessCredentials(
+        const credentialsResponse = await tileDBAPI.listCredentials(
           owner
         );
         const user = options.owners[0];
@@ -58,7 +63,7 @@ export function openCredentialsDialog(options: Options): void {
 
         showMainDialog({
           ...options,
-          credentials: credentialsResponse.data || [],
+          credentials: credentialsResponse.data?.credentials || [],
           selectedOwner: owner,
           defaultS3CredentialName,
         });

@@ -1,4 +1,4 @@
-import { v1, v2 } from '@tiledb-inc/tiledb-cloud';
+import { v2 } from '@tiledb-inc/tiledb-cloud';
 import { addOptionsToSelectInput } from './../helpers/dom';
 import { JupyterFrontEnd } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
@@ -6,10 +6,12 @@ import { showErrorMessage } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
 import { openCredentialsDialog } from '../helpers/openDialogs';
 import { resetSelectInput } from '../helpers/dom';
-import getTileDBAPI from '../helpers/tiledbAPI';
+import getTileDBAPI, { Versions } from '../helpers/tiledbAPI';
 import getDefaultS3DataFromNamespace from '../helpers/getDefaultS3DataFromNamespace';
 
-const { UserApi } = v1;
+
+const { UserApi } = v2;
+
 export interface Options {
   owners: string[];
   credentials: v2.AccessCredential[];
@@ -109,11 +111,11 @@ export class TileDBPromptOptionsWidget extends Widget {
       // Reset credentials input
       resetSelectInput(s3_cred_selectinput);
       // Get credentials and default credentials name from API
-      const userTileDBAPI = await getTileDBAPI(UserApi);
-      const credentialsResponse = await userTileDBAPI.checkAWSAccessCredentials(
+      const userTileDBAPI = await getTileDBAPI(UserApi, Versions.v2);
+      const credentialsResponse = await userTileDBAPI.listCredentials(
         newOwner
       );
-      const newCredentials = credentialsResponse.data;
+      const newCredentials = credentialsResponse.data.credentials || [];
       const username = options.owners[0];
       const {
         default_s3_path_credentials_name: defaultCredentialsName,

@@ -7,7 +7,7 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import getTileDBAPI from './helpers/tiledbAPI';
+import getTileDBAPI, { Versions } from './helpers/tiledbAPI';
 import { showMainDialog } from './helpers/openDialogs';
 import getOrgNamesWithWritePermissions from './helpers/getOrgNamesWithWritePermissions';
 
@@ -35,7 +35,7 @@ function activate(
     caption: 'Prompt the user for TileDB notebook options',
     execute: async () => {
       const tileDBAPI = await getTileDBAPI(UserApi);
-      const tileDBAPIV2 = await getTileDBAPI(UserApiV2, 'v2');
+      const tileDBAPIV2 = await getTileDBAPI(UserApiV2, Versions.v2);
 
       const userResponse = await tileDBAPI.getUser();
       const userData = userResponse.data;
@@ -54,7 +54,7 @@ function activate(
 
       showMainDialog({
         owners,
-        credentials: credentialsResponse.data.credentials || [],
+        credentials: credentialsResponse.data?.credentials || [],
         defaultS3Path,
         defaultS3CredentialName: userData.default_s3_path_credentials_name,
         app,

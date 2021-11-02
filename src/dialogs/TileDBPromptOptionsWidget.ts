@@ -48,20 +48,22 @@ export class TileDBPromptOptionsWidget extends Widget {
     name_label.textContent = 'Name:';
     const name_input = document.createElement('input');
     name_input.setAttribute('type', 'text');
-    name_input.setAttribute('value', 'Untitled');
+    name_input.setAttribute('value', 'untitled');
     name_input.setAttribute('name', 'name');
     name_input.setAttribute('required', 'true');
-    name_input.setAttribute('pattern', '([A-Z]|[a-z]|[0-9]|_|-)+');
+    name_input.setAttribute('pattern', '[a-z][A-Za-z0-9_-]*');
+    name_input.setAttribute('maxlength', '250');
     name_input.setAttribute('oninput', 'this.setCustomValidity("")');
-    name_input.oninvalid = (): void => {
-      if (!name_input.value) {
-        name_input.setCustomValidity('This field is required');
+
+    name_input.addEventListener('invalid', function (event : any) {
+      if (event.target.validity.valueMissing) {
+        event.target.setCustomValidity('This field is required');
       } else {
-        name_input.setCustomValidity(
-          'Name should consist of letters(a -z and A-Z), numbers, "_" and "-" only'
+        event.target.setCustomValidity(
+          'Name should start with a lowercase character and consist of letters(a -z and A-Z), numbers, "_" and "-" only'
         );
       }
-    };
+    });
 
     const s3_label = document.createElement('label');
     s3_label.textContent = 'Cloud storage path:';

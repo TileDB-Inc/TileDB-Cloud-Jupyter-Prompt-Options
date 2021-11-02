@@ -4,11 +4,9 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { showErrorMessage } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
-import { openCredentialsDialog } from '../helpers/openDialogs';
 import { resetSelectInput } from '../helpers/dom';
 import getTileDBAPI, { Versions } from '../helpers/tiledbAPI';
 import getDefaultS3DataFromNamespace from '../helpers/getDefaultS3DataFromNamespace';
-
 
 const { UserApi } = v2;
 
@@ -55,7 +53,7 @@ export class TileDBPromptOptionsWidget extends Widget {
     name_input.setAttribute('maxlength', '250');
     name_input.setAttribute('oninput', 'this.setCustomValidity("")');
 
-    name_input.addEventListener('invalid', function (event : any) {
+    name_input.addEventListener('invalid', function (event: any) {
       if (event.target.validity.valueMissing) {
         event.target.setCustomValidity('This field is required');
       } else {
@@ -93,11 +91,7 @@ export class TileDBPromptOptionsWidget extends Widget {
     addCredentialsLink.classList.add('TDB-Prompt-Dialog__link');
 
     addCredentialsLink.onclick = (): void => {
-      openCredentialsDialog(options);
-      const cancelButton: HTMLElement = document.body.querySelector(
-        '.jp-Dialog-button.jp-mod-reject'
-      );
-      cancelButton.click();
+      window.parent.postMessage(`@tiledb/prompt_options::add_credentials`, '*');
     };
 
     const owner_label = document.createElement('label');
@@ -114,9 +108,7 @@ export class TileDBPromptOptionsWidget extends Widget {
       resetSelectInput(s3_cred_selectinput);
       // Get credentials and default credentials name from API
       const userTileDBAPI = await getTileDBAPI(UserApi, Versions.v2);
-      const credentialsResponse = await userTileDBAPI.listCredentials(
-        newOwner
-      );
+      const credentialsResponse = await userTileDBAPI.listCredentials(newOwner);
       const newCredentials = credentialsResponse.data.credentials || [];
       const username = options.owners[0];
       const {
@@ -167,6 +159,23 @@ export class TileDBPromptOptionsWidget extends Widget {
     form.appendChild(owner_input);
     form.appendChild(kernel_label);
     form.appendChild(kernel_input);
+
+    // Update credentials input when we get message from parent window
+    window.addEventListener('message', async(e) => {
+      if (e.data === 'TILEDB_UPDATED_CREDENTIALS') {
+        // Make call to update credentials
+        const userTileDBAPI = await getTileDBAPI(UserApi, Versions.v2);
+        const username = options.owners[0];
+        const credentialsResponse = await userTileDBAPI.listCredentials(username);
+        s3_cred_selectinput.innerHTML = '';
+        const credentials: string[] = credentialsResponse.data?.credentials.map((cred) => cred.name);
+        addOptionsToSelectInput(
+          s3_cred_selectinput,
+          credentials,
+          options.defaultS3CredentialName
+        );
+      }
+    });
   }
 
   /**

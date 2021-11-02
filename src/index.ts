@@ -40,9 +40,7 @@ function activate(
       const userResponse = await tileDBAPI.getUser();
       const userData = userResponse.data;
       const username = userData.username;
-      const credentialsResponse = await tileDBAPIV2.listCredentials(
-        username
-      );
+      const credentialsResponse = await tileDBAPIV2.listCredentials(username);
       const owners = [username];
       const organizationsWithWritePermissions = getOrgNamesWithWritePermissions(
         userData.organizations || []

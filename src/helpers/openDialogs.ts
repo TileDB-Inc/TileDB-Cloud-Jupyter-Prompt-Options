@@ -14,7 +14,6 @@ import getTileDBAPI, { Versions } from './tiledbAPI';
 import getDefaultS3DataFromNamespace from './getDefaultS3DataFromNamespace';
 
 const { UserApi } = v2;
-// const { UserApi: UserApiV2 } = v2;
 
 export const showMainDialog = (data: Options): void => {
   showDialog<PromptDialogValue>({
@@ -39,23 +38,33 @@ export function openCredentialsDialog(options: Options): void {
       const {
         credentialName,
         credentialKey,
-        credentialSecret,
+        credentialSecretOrAccountName,
         owner,
+        provider,
       } = result.value;
       const tileDBAPI = await getTileDBAPI(UserApi, Versions.v2);
       try {
-        await tileDBAPI.addCredential(owner, {
-          name: credentialName,
-          credential: {
+        let credential = {};
+        if (provider === v2.CloudProvider.Aws) {
+          credential = {
             aws: {
               access_key_id: credentialKey,
-              secret_access_key: credentialSecret,
-            }
-          }
+              secret_access_key: credentialSecretOrAccountName,
+            },
+          };
+        } else if (provider === v2.CloudProvider.Azure) {
+          credential = {
+            azure: {
+              account_name: credentialSecretOrAccountName,
+              account_key: credentialKey,
+            },
+          };
+        }
+        await tileDBAPI.addCredential(owner, {
+          name: credentialName,
+          credential,
         });
-        const credentialsResponse = await tileDBAPI.listCredentials(
-          owner
-        );
+        const credentialsResponse = await tileDBAPI.listCredentials(owner);
         const user = options.owners[0];
         const {
           default_s3_path_credentials_name: defaultS3CredentialName,

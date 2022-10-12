@@ -114,7 +114,7 @@ export class TileDBPromptOptionsWidget extends Widget {
       const username = options.owners[0];
       const {
         default_s3_path_credentials_name: defaultCredentialsName,
-        default_s3_path: defaultS3Path
+        default_s3_path: defaultS3Path,
       } = await getDefaultS3DataFromNamespace(username, newOwner);
       // Update the s3_path with the new owner's default_s3_path if the input has not changed by the user.
       if (defaultS3Path && !this.isDefaultS3PathInputDirty) {

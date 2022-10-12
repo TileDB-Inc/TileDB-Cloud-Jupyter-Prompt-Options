@@ -1,7 +1,7 @@
 import { v1, v2 } from '@tiledb-inc/tiledb-cloud';
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin
+  JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
@@ -19,7 +19,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   id: 'tiledb-prompt-notebook-options',
   optional: [ILauncher],
-  requires: [IMainMenu, IDocumentManager, IFileBrowserFactory]
+  requires: [IMainMenu, IDocumentManager, IFileBrowserFactory],
 };
 
 function activate(
@@ -46,7 +46,9 @@ function activate(
         userData.organizations || []
       );
       const defaultS3Path =
-        userData.default_s3_path || 's3://tiledb-user/notebooks';
+        userData.asset_locations?.notebooks?.path ||
+        userData.default_s3_path ||
+        's3://tiledb-user/notebooks';
 
       owners.push(...organizationsWithWritePermissions);
 
@@ -54,14 +56,16 @@ function activate(
         owners,
         credentials: credentialsResponse.data?.credentials || [],
         defaultS3Path,
-        defaultS3CredentialName: userData.default_s3_path_credentials_name as any,
+        defaultS3CredentialName:
+          userData.asset_locations?.notebooks?.credentials_name ||
+          (userData.default_s3_path_credentials_name as any),
         app,
         docManager,
         selectedOwner: userData.username,
       });
     },
     isEnabled: () => true,
-    label: 'TileDB Notebook'
+    label: 'TileDB Notebook',
   });
 
   // Add a launcher item.
@@ -72,7 +76,7 @@ function activate(
       command: OPEN_COMMAND,
       kernelIconUrl:
         'https://cloud.tiledb.com/static/img/tiledb-logo-jupyterlab.svg',
-      rank: 1
+      rank: 1,
     });
   }
 

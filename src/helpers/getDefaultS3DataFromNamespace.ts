@@ -35,10 +35,11 @@ const getDefaultS3DataFromNamespace = async (
 
   return {
     default_s3_path:
-      (ownerResponse.data.asset_locations?.notebooks as any) ||
+      ownerResponse.data.asset_locations?.notebooks?.path ||
       ownerResponse.data.default_s3_path,
-    default_s3_path_credentials_name: ownerResponse.data
-      .default_s3_path_credentials_name as string,
+    default_s3_path_credentials_name:
+      ownerResponse.data.asset_locations?.notebooks?.credentials_name ||
+      (ownerResponse.data.default_s3_path_credentials_name as string),
   };
 };
 

@@ -54,10 +54,10 @@ function activate(
         owners,
         credentials: credentialsResponse.data?.credentials || [],
         defaultS3Path,
-        defaultS3CredentialName: userData.default_s3_path_credentials_name,
+        defaultS3CredentialName: userData.default_s3_path_credentials_name as any,
         app,
         docManager,
-        selectedOwner: userData.username
+        selectedOwner: userData.username,
       });
     },
     isEnabled: () => true,

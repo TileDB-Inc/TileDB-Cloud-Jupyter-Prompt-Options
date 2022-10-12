@@ -12,7 +12,7 @@ interface IConstructable<T> {
 
 export enum Versions {
   v1 = 'v1',
-  v2 = 'v2'
+  v2 = 'v2',
 }
 
 const getTileDBAPI = async <T>(
@@ -24,7 +24,7 @@ const getTileDBAPI = async <T>(
   }
   const config: IConfig = {
     apiKey: data.token,
-    basePath: `${data.api_host}/${apiVersion}`
+    basePath: `${data.api_host}/${apiVersion}`,
   };
   return new Api(config);
 };

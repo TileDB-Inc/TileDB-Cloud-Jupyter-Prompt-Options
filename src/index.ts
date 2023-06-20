@@ -27,10 +27,7 @@ function activate(
   app.commands.addCommand(OPEN_COMMAND, {
     caption: 'Prompt the user for TileDB notebook options',
     execute: async () => {
-      window.parent.postMessage(
-        { action: 'TILEDB_CREATE_NOTEBOOK_MODAL' },
-        '*'
-      );
+      window.parent.postMessage({ action: 'TILEDB_CREATE_NOTEBOOK' }, '*');
     },
     isEnabled: () => true,
     label: 'TileDB Notebook',

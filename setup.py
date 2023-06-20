@@ -48,10 +48,7 @@ pkg_json = json.loads((HERE / "package.json").read_bytes())
 npm_version = pkg_json["version"]
 
 version = (
-    npm_version
-    .replace("-alpha.", "a")
-    .replace("-beta.", "b")
-    .replace("-rc.", "rc")
+    npm_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
 )
 
 setup_args = dict(

@@ -153,5 +153,6 @@ stages:
         GITHUB_TOKEN: $(GITHUB_TOKEN)
         NPM_TOKEN: $(NPM_TOKEN)
       displayName: 'Release to npm'
+
     - script: python -m twine upload -r "pypi-upload" --config-file $(PYPIRC_PATH) --verbose dist/*.whl
       displayName: 'Release to Pypi'

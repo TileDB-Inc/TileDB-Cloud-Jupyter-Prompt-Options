@@ -125,6 +125,13 @@ stages:
       displayName: 'Save npm token & install labextension dependencies'
       env:
         NPM_TOKEN: $(NPM_TOKEN)
+
+    - script: |
+        latestGitTag=$(git describe --tags --abbrev=0)
+        latestGitTag="${latestGitTag:1}"
+        npm version $latestGitTag --no-commit-hooks --no-git-tag-version
+      displayName: 'Update package.json version'
+
     - script: jlpm run build:prod
       displayName: 'Build jupyterlab extension'
       env:
@@ -141,24 +148,11 @@ stages:
       inputs:
         pythonUploadServiceConnection: 'pypi-upload'
 
-    - script: python -m twine upload -r "pypi-upload" --config-file $(PYPIRC_PATH) --verbose dist/*.whl
-      displayName: 'Release to Pypi'
-    
-    - script: |
-        currentVersion=$(./node_modules/.bin/git-tag-version)
-        latestGitTag=$(git describe --tags --abbrev=0)
-        latestGitTag="${latestGitTag:1}"
-        echo $currentVersion
-        echo $latestGitTag
-        if [[ $latestGitTag == *"beta"* ]];
-        then
-        echo "Publishing beta version";
-        yarn publish --new-version $latestGitTag --no-git-tag-version --access public --tag beta
-        else
-        echo "Publishing new version";
-        yarn publish --new-version $(./node_modules/.bin/git-tag-version) --no-git-tag-version --access public
-        fi
+    - script: ./scripts/publish.sh
       env:
         GITHUB_TOKEN: $(GITHUB_TOKEN)
         NPM_TOKEN: $(NPM_TOKEN)
       displayName: 'Release to npm'
+
+    - script: python -m twine upload -r "pypi-upload" --config-file $(PYPIRC_PATH) --verbose dist/*.whl
+      displayName: 'Release to Pypi'

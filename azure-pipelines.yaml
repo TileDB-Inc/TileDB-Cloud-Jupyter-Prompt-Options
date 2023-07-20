@@ -12,18 +12,22 @@ stages:
   - job: Build
     strategy:
       matrix:
-        mac_38:
-          imageName: 'macOS-11'
+        linux_py38_jlab3:
+          imageName: 'ubuntu-22.04'
           python.version: '3.8'
-        mac_39:
-          imageName: 'macOS-11'
+          jupyterlab.version: '3.6.5'
+        linux_py39_jlab3:
+          imageName: 'ubuntu-22.04'
           python.version: '3.9'
-        linux_py38:
-          imageName: 'ubuntu-20.04'
+          jupyterlab.version: '3.6.5'
+        linux_py38_jlab4:
+          imageName: 'ubuntu-22.04'
           python.version: '3.8'
-        linux_py39:
-          imageName: 'ubuntu-20.04'
+          jupyterlab.version: '4.0.2'
+        linux_py39_jlab4:
+          imageName: 'ubuntu-22.04'
           python.version: '3.9'
+          jupyterlab.version: '4.0.2'
     pool:
       vmImage: $(imageName)
 
@@ -33,8 +37,7 @@ stages:
         versionSpec: '$(python.version)'
         architecture: 'x64'
 
-      condition: eq(variables['imageName'], 'ubuntu-20.04')
-    - script: python -m pip install --upgrade ipywidgets traitlets pytest build jupyter-packaging==0.12.0 jupyterlab==3.6.5
+    - script: python -m pip install --upgrade ipywidgets traitlets pytest build jupyter-packaging==0.12.0 jupyterlab==$(jupyterlab.version)
       # pip installs release candidates by default:
       #   https://github.com/pypa/pip/issues/4969
       displayName: 'Install dependencies'
@@ -89,7 +92,7 @@ stages:
   jobs:
   - job: Deploy_package
     pool:
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-22.04'
 
     steps:
     - task: UsePythonVersion@0

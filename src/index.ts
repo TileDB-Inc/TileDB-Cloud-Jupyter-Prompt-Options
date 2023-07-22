@@ -2,8 +2,6 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
-import { IDocumentManager } from '@jupyterlab/docmanager';
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
@@ -12,14 +10,12 @@ const extension: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   id: 'tiledb-prompt-notebook-options',
   optional: [ILauncher],
-  requires: [IMainMenu, IDocumentManager, IFileBrowserFactory],
+  requires: [IMainMenu],
 };
 
 function activate(
   app: JupyterFrontEnd,
   menu: IMainMenu,
-  docManager: IDocumentManager,
-  browser: IFileBrowserFactory,
   launcher: ILauncher | null
 ): void {
   const OPEN_COMMAND = 'tiledb-prompt-notebook-options:open';

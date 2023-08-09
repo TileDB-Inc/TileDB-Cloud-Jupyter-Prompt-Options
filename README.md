@@ -9,6 +9,10 @@ This extension is composed of a Python package named `tiledb-prompt-options`
 for the server extension and a NPM package named `@tiledb-inc/tiledb_prompt_options`
 for the frontend extension.
 
+## Warning
+
+As of version v1.1.0, the extension is designed to operate exclusively within JupyterLab environments that are integrated into TileDB's UI.
+
 
 ## Requirements
 

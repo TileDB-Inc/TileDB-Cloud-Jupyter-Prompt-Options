@@ -80,16 +80,6 @@
     "access": "public"
   },
   "jupyterlab": {
-    "discovery": {
-      "server": {
-        "managers": [
-          "pip"
-        ],
-        "base": {
-          "name": "tiledb-prompt-options"
-        }
-      }
-    },
     "extension": true,
     "outputDir": "tiledb-prompt-options/labextension"
   }

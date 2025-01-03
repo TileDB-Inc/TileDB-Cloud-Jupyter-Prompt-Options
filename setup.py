@@ -1,6 +1,7 @@
 """
 tiledb-prompt-options setup
 """
+
 import json
 import sys
 from pathlib import Path

@@ -27,17 +27,6 @@ data_files_spec = [
         "**",
     ),
     ("share/jupyter/labextensions/%s" % labext_name, str("."), "install.json"),
-    (
-        "etc/jupyter/jupyter_server_config.d",
-        "jupyter-config/server-config",
-        "tiledb-prompt-options.json",
-    ),
-    # For backward compatibility with notebook server
-    (
-        "etc/jupyter/jupyter_notebook_config.d",
-        "jupyter-config/nb-config",
-        "tiledb-prompt-options.json",
-    ),
 ]
 
 long_description = (HERE / "README.md").read_text()
@@ -69,7 +58,6 @@ setup_args = dict(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
-        "jupyter_server>=1.6",
         "tiledb>=0.7.0",
         "tiledb-cloud>=0.6.7",
     ],
